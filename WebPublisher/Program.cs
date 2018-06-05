@@ -1,5 +1,6 @@
 ﻿using FileTools.NET.Extensions;
 using Network.NET.Clients;
+using Network.NET.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,17 +40,18 @@ namespace WebPublisher
             FileInfo indexFile = new FileInfo(Settings.Default.index);
             string originalIndexText = File.ReadAllText(Settings.Default.index);
             string indexText = originalIndexText;
-            var filesToUpload = new List<FileInfo>();
-            filesToUpload.Add(indexFile);
+            var filesToUpload = new List<string>();
+            filesToUpload.Add(Settings.Default.index);
             for (int i = 0; i < Settings.Default.files.Count; i++)
             {
+                string file = Settings.Default.files[i];
+                filesToUpload.Add(file);
                 if (Settings.Default.filesRegexes.Count - 1 >= i)
                 {
-                    FileInfo file = new FileInfo(Settings.Default.files[i]);
-                    filesToUpload.Add(file);
+                    FileInfo fileInfo = new FileInfo(file);
                     Match fileMatch = Regex.Match(indexText, Settings.Default.filesRegexes[i]);
-                    string fileHash = file.GetCRC32();
-                    indexText = ReplaceVHash(fileMatch, file, fileHash, indexText);
+                    string fileHash = fileInfo.GetCRC32();
+                    indexText = ReplaceVHash(fileMatch, fileInfo, fileHash, indexText);
                 }
             }
             if (indexText != originalIndexText)
@@ -57,9 +59,16 @@ namespace WebPublisher
                 File.WriteAllText(Settings.Default.index, indexText);
             }
             var ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
-            foreach (FileInfo fileToUpload in filesToUpload)
+            for(int i = 0; i < filesToUpload.Count; i++)
             {
-                ftpClient.Upload(fileToUpload.FullName, Settings.Default.uploadDirectory, fileToUpload.Name, FileExistsAction.Overwrite);
+                string fileToUpload = filesToUpload[i];
+                string fileName = Path.GetFileName(fileToUpload);
+                string directory = "";
+                if (fileToUpload.Contains("/"))
+                {
+                    directory = fileToUpload.Substring(0, fileToUpload.LastIndexOf('/'));
+                }
+                ftpClient.Upload(fileToUpload, Path.Combine(Settings.Default.uploadDirectory, directory), fileName, FileExistsAction.Overwrite);
             }
         }
         static string ReplaceVHash(Match match, FileInfo file, string hash, string indexText)
