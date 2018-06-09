@@ -25,82 +25,37 @@ namespace WebPublisher {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("index.html")]
-        public string index {
+        [global::System.Configuration.DefaultSettingValueAttribute("wpconfig")]
+        public string configFilename {
             get {
-                return ((string)(this["index"]));
+                return ((string)(this["configFilename"]));
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ftpUsername {
             get {
                 return ((string)(this["ftpUsername"]));
             }
-            set {
-                this["ftpUsername"] = value;
-            }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ftpPassword {
             get {
                 return ((string)(this["ftpPassword"]));
             }
-            set {
-                this["ftpPassword"] = value;
-            }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>index.css</string>\r\n  <string>index.js</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection files {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["files"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string uploadDirectory {
-            get {
-                return ((string)(this["uploadDirectory"]));
-            }
-            set {
-                this["uploadDirectory"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>&lt;link rel=""stylesheet"" href=""(index\.css[\?v=A-Fa-f\d]*)"" \/&gt;</string>
-  <string>&lt;script src=""(index\.js[\?v=A-Fa-f\d]*)""&gt;&lt;\/script&gt;</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection filesRegexes {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["filesRegexes"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ftpHost {
             get {
                 return ((string)(this["ftpHost"]));
-            }
-            set {
-                this["ftpHost"] = value;
             }
         }
     }

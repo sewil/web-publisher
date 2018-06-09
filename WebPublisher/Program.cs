@@ -1,6 +1,7 @@
 ﻿using FileTools.NET.Extensions;
 using Network.NET.Clients;
 using Network.NET.Enums;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,51 +13,57 @@ namespace WebPublisher
     {
         static void Main(string[] args)
         {
-            if (string.IsNullOrWhiteSpace(Settings.Default.index))
+            if (string.IsNullOrWhiteSpace(Settings.Default.configFilename))
             {
-                throw new Exception("index file name not set");
+                throw new Exception("Config file is not configured.");
             }
+            string configFile = Settings.Default.configFilename + ".json";
+            if (args.Length == 1 && args[0].ToLower() == "init")
+            {
+                string json = JsonConvert.SerializeObject(Config.Default, Formatting.Indented);
+                File.WriteAllText(configFile, json);
+                Environment.Exit(0);
+            }
+            if (!File.Exists(configFile))
+            {
+                throw new Exception("Config file not found. Type \"webpublisher init\" to create one.");
+            }
+            string configContents = File.ReadAllText(configFile);
+            Config config = JsonConvert.DeserializeObject<Config>(configContents);
             if (string.IsNullOrWhiteSpace(Settings.Default.ftpHost))
             {
-                Console.Write("FTP Host: ");
-                Settings.Default.ftpHost = Console.ReadLine();
+                throw new Exception("FTP host is not configured.");
             }
             if (string.IsNullOrWhiteSpace(Settings.Default.ftpUsername))
             {
-                Console.Write("FTP Username: ");
-                Settings.Default.ftpUsername = Console.ReadLine();
+                throw new Exception("FTP username is not configured.");
             }
             if (string.IsNullOrWhiteSpace(Settings.Default.ftpPassword))
             {
-                Console.Write("FTP Password: ");
-                Settings.Default.ftpPassword = Console.ReadLine();
+                throw new Exception("FTP password is not configured.");
             }
-            if (string.IsNullOrWhiteSpace(Settings.Default.uploadDirectory))
-            {
-                Console.Write("FTP Upload Directory: ");
-                Settings.Default.uploadDirectory = Console.ReadLine();
-            }
-            Settings.Default.Save();
-            FileInfo indexFile = new FileInfo(Settings.Default.index);
-            string originalIndexText = File.ReadAllText(Settings.Default.index);
-            string indexText = originalIndexText;
+            string originalEntryText = File.ReadAllText(config.Entry);
+            string entryText = originalEntryText;
             var filesToUpload = new List<string>();
-            filesToUpload.Add(Settings.Default.index);
-            for (int i = 0; i < Settings.Default.files.Count; i++)
+            filesToUpload.Add(config.Entry);
+            for (int i = 0; i < config.Include.Count; i++)
             {
-                string file = Settings.Default.files[i];
-                filesToUpload.Add(file);
-                if (Settings.Default.filesRegexes.Count - 1 >= i)
+                ConfigAttachment attachment = config.Include[i];
+                if (attachment.File.HasText() && File.Exists(attachment.File))
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    Match fileMatch = Regex.Match(indexText, Settings.Default.filesRegexes[i]);
-                    string fileHash = fileInfo.GetCRC32();
-                    indexText = ReplaceVHash(fileMatch, fileInfo, fileHash, indexText);
+                    filesToUpload.Add(attachment.File);
+                    if (attachment.EntryLinkPattern.HasText())
+                    {
+                        FileInfo fileInfo = new FileInfo(attachment.File);
+                        Match fileMatch = Regex.Match(entryText, attachment.EntryLinkPattern);
+                        string fileHash = fileInfo.GetCRC32();
+                        entryText = ReplaceVHash(fileMatch, fileInfo, fileHash, entryText);
+                    }
                 }
             }
-            if (indexText != originalIndexText)
+            if (entryText != originalEntryText)
             {
-                File.WriteAllText(Settings.Default.index, indexText);
+                File.WriteAllText(Settings.Default.configFilename, entryText);
             }
             var ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
             for(int i = 0; i < filesToUpload.Count; i++)
@@ -68,7 +75,7 @@ namespace WebPublisher
                 {
                     directory = fileToUpload.Substring(0, fileToUpload.LastIndexOf('/'));
                 }
-                ftpClient.Upload(fileToUpload, Path.Combine(Settings.Default.uploadDirectory, directory), fileName, FileExistsAction.Overwrite);
+                ftpClient.Upload(fileToUpload, Path.Combine(config.UploadDirectory, directory), fileName, FileExistsAction.Overwrite);
             }
         }
         static string ReplaceVHash(Match match, FileInfo file, string hash, string indexText)

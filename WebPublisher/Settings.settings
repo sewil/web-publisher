@@ -2,33 +2,16 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WebPublisher" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="index" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">index.html</Value>
+    <Setting Name="configFilename" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">wpconfig</Value>
     </Setting>
-    <Setting Name="ftpUsername" Type="System.String" Scope="User">
+    <Setting Name="ftpUsername" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="ftpPassword" Type="System.String" Scope="User">
+    <Setting Name="ftpPassword" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="files" Type="System.Collections.Specialized.StringCollection" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;index.css&lt;/string&gt;
-  &lt;string&gt;index.js&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="uploadDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="filesRegexes" Type="System.Collections.Specialized.StringCollection" Scope="Application">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;&amp;lt;link rel="stylesheet" href="(index\.css[\?v=A-Fa-f\d]*)" \/&amp;gt;&lt;/string&gt;
-  &lt;string&gt;&amp;lt;script src="(index\.js[\?v=A-Fa-f\d]*)"&amp;gt;&amp;lt;\/script&amp;gt;&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="ftpHost" Type="System.String" Scope="User">
+    <Setting Name="ftpHost" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>
