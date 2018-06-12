@@ -63,7 +63,7 @@ namespace WebPublisher
             }
             if (entryText != originalEntryText)
             {
-                File.WriteAllText(Settings.Default.configFilename, entryText);
+                File.WriteAllText(config.Entry, entryText);
             }
             var ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
             for(int i = 0; i < filesToUpload.Count; i++)
