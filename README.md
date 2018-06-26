@@ -1,11 +1,10 @@
 # Features
-- Applies a CRC-32 checksum to the `v`-parameter for each matching web file in the index file.
-- Uploads and overwrites existing web files to the given host and directory using FTP.
-- Stores the host configuration credentials in the user's AppData.
+- For the entry file, if configured, applies a query on each attachment URL with the value of the attachment file's CRC-32 checksum.
+- Uploads and overwrites existing web files to the given host and directory through FTP.
 
 # Configuration
 ## App
-In the app config file `WebPublisher.exe.config` you can configure the name of the project config file name and the FTP Server credentials. Example:
+In the app config file `WebPublisher.exe.config`, you can configure the name of the project configuration file name along with the FTP Server credentials. Example:
 ```
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
@@ -43,7 +42,7 @@ In the app config file `WebPublisher.exe.config` you can configure the name of t
 </configuration>
 ```
 ## Project
-In the project configuration file, which will be located in your web project root, you can configure the name of your entry file, the ftp upload directory path, and what other files to include. To generate an example configuration file, type `webpublisher init` in your project root. Example:
+In the project configuration file, which should be located in your web project root, you can configure the name of your entry file, the FTP upload directory path, and other files to include in the upload. To generate an example configuration file, type `webpublisher init` in your project root. Example:
 ```
 {
   "entry": "index.html",
@@ -65,7 +64,7 @@ In the project configuration file, which will be located in your web project roo
 - uploadDirectory: The relative FTP directory where the files will be uploaded.
 - include: Array of files to include in the upload.
   - file: The local path of the file to upload.
-  - entryLinkPattern (Optional): If the entry links to this file, this pattern will be used to replace the link reference in the entry file with the latest file hash.
+  - entryLinkPattern (Optional): If the entry file references this file, this regex pattern will be used to apply the CRC-32 checksum of this file as a query to the reference URL.
 
 # Technologies
 - [Microsoft .NET Framework 4.5.1](https://www.microsoft.com/sv-se/download/details.aspx?id=40779)
