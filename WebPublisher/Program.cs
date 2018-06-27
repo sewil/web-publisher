@@ -1,10 +1,12 @@
-﻿using FileTools.NET.Extensions;
-using Network.NET.Clients;
-using Network.NET.Enums;
+﻿using CRC.Objects;
+using FTPClient;
+using FTPClient.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace WebPublisher
@@ -49,15 +51,21 @@ namespace WebPublisher
             for (int i = 0; i < config.Include.Count; i++)
             {
                 ConfigAttachment attachment = config.Include[i];
-                if (attachment.File.HasText() && File.Exists(attachment.File))
+                if (!string.IsNullOrWhiteSpace(attachment.File) && File.Exists(attachment.File))
                 {
                     filesToUpload.Add(attachment.File);
-                    if (attachment.EntryLinkPattern.HasText())
+                    if (!string.IsNullOrWhiteSpace(attachment.EntryLinkPattern))
                     {
                         FileInfo fileInfo = new FileInfo(attachment.File);
                         Match fileMatch = Regex.Match(entryText, attachment.EntryLinkPattern);
-                        string fileHash = fileInfo.GetCRC32();
-                        entryText = ReplaceVHash(fileMatch, fileInfo, fileHash, entryText);
+                        using (FileStream stream = fileInfo.OpenRead())
+                        {
+                            byte[] contents = new byte[stream.Length];
+                            stream.Read(contents, 0, contents.Length);
+                            byte[] bytes = new CRC32().ComputeHash(contents);
+                            string crc32 = string.Join("", bytes.ToList().Select(b => b.ToString("x2").ToUpper()));
+                            entryText = ReplaceVHash(fileMatch, fileInfo, crc32, entryText);
+                        }
                     }
                 }
             }
@@ -65,7 +73,7 @@ namespace WebPublisher
             {
                 File.WriteAllText(config.Entry, entryText);
             }
-            var ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
+            var ftpClient = new Client(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
             for(int i = 0; i < filesToUpload.Count; i++)
             {
                 string fileToUpload = filesToUpload[i];
