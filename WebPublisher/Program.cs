@@ -1,6 +1,6 @@
 ﻿using CRC;
-using Network.NET.Clients;
-using Network.NET.Enums;
+using FTPClient;
+using FTPClient.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -65,7 +65,7 @@ namespace WebPublisher
             {
                 File.WriteAllText(config.Entry, entryText);
             }
-            var ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
+            var ftpClient = new Client(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
             for(int i = 0; i < filesToUpload.Count; i++)
             {
                 string fileToUpload = filesToUpload[i];

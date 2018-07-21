@@ -67,9 +67,9 @@
       <Project>{1141EA90-7604-42D9-BE59-F8B9F7F0053D}</Project>
       <Name>CRC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Network.NET\Network.NET\Network.NET\Network.NET.csproj">
-      <Project>{daca441c-87b0-4b9c-9ce7-2e5fd4b946d8}</Project>
-      <Name>Network.NET</Name>
+    <ProjectReference Include="..\..\ftpclient-csharp\FTPClient\FTPClient\FTPClient.csproj">
+      <Project>{D9D42725-EF61-4989-AFD3-69EA7F08984D}</Project>
+      <Name>FTPClient</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
