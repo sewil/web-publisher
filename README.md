@@ -71,7 +71,7 @@ In the project configuration file, which will be located in your web project roo
 - [Microsoft .NET Framework 4.5.1](https://www.microsoft.com/sv-se/download/details.aspx?id=40779)
 
 # Dependencies
-- [FileTools.NET](https://github.com/sewil/FileTools.NET)
-- [Network.NET](https://github.com/sewil/Network.NET)
+- [crcsharp](https://github.com/sewil/crcsharp)
+- [network-csharp](https://github.com/sewil/network-csharp)
   - [Renci.SshNet.Async@1.2.0](https://github.com/JohnTheGr8/Renci.SshNet.Async)
   - [SSH.NET@2016.0.0](https://github.com/sshnet/SSH.NET)

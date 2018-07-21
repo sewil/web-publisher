@@ -1,4 +1,4 @@
-﻿using FileTools.NET.Extensions;
+﻿using CRC;
 using Network.NET.Clients;
 using Network.NET.Enums;
 using Newtonsoft.Json;
@@ -49,14 +49,14 @@ namespace WebPublisher
             for (int i = 0; i < config.Include.Count; i++)
             {
                 ConfigAttachment attachment = config.Include[i];
-                if (attachment.File.HasText() && File.Exists(attachment.File))
+                if (!string.IsNullOrWhiteSpace(attachment.File) && File.Exists(attachment.File))
                 {
                     filesToUpload.Add(attachment.File);
-                    if (attachment.EntryLinkPattern.HasText())
+                    if (!string.IsNullOrWhiteSpace(attachment.EntryLinkPattern))
                     {
                         FileInfo fileInfo = new FileInfo(attachment.File);
                         Match fileMatch = Regex.Match(entryText, attachment.EntryLinkPattern);
-                        string fileHash = fileInfo.GetCRC32();
+                        string fileHash = Crc32.ToHexString(Crc32.ComputeFileHash(attachment.File));
                         entryText = ReplaceVHash(fileMatch, fileInfo, fileHash, entryText);
                     }
                 }
