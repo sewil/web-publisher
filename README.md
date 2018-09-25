@@ -70,5 +70,4 @@ In the project configuration file, which should be located in your web project r
 - [Microsoft .NET Framework 4.5.1](https://www.microsoft.com/sv-se/download/details.aspx?id=40779)
 
 # Dependencies
-- [crcsharp](https://github.com/sewil/crcsharp)
-- [ftpclient-csharp](https://github.com/sewil/ftpclient-csharp)
+- [DamienGKit](https://github.com/damieng/DamienGKit)

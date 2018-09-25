@@ -1,6 +1,4 @@
-﻿using CRC;
-using FTPClient;
-using FTPClient.Enums;
+﻿using DamienG.Security.Cryptography;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -46,6 +44,7 @@ namespace WebPublisher
             string entryText = originalEntryText;
             var filesToUpload = new List<string>();
             filesToUpload.Add(config.Entry);
+
             for (int i = 0; i < config.Include.Count; i++)
             {
                 ConfigAttachment attachment = config.Include[i];
@@ -56,16 +55,18 @@ namespace WebPublisher
                     {
                         FileInfo fileInfo = new FileInfo(attachment.File);
                         Match fileMatch = Regex.Match(entryText, attachment.EntryLinkPattern);
-                        string fileHash = Crc32.ToHexString(Crc32.ComputeFileHash(attachment.File));
+                        string fileHash = GetFileHash(attachment.File);
                         entryText = ReplaceVHash(fileMatch, fileInfo, fileHash, entryText);
                     }
                 }
             }
+
             if (entryText != originalEntryText)
             {
                 File.WriteAllText(config.Entry, entryText);
             }
-            var ftpClient = new Client(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
+
+            FTPClient ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
             for(int i = 0; i < filesToUpload.Count; i++)
             {
                 string fileToUpload = filesToUpload[i];
@@ -78,7 +79,8 @@ namespace WebPublisher
                 ftpClient.Upload(fileToUpload, Path.Combine(config.UploadDirectory, directory), fileName, FileExistsAction.Overwrite);
             }
         }
-        static string ReplaceVHash(Match match, FileInfo file, string hash, string indexText)
+
+        private static string ReplaceVHash(Match match, FileInfo file, string hash, string indexText)
         {
             int groupIndex = match.Groups[1].Index;
             int groupLength = match.Groups[1].Length;
@@ -86,6 +88,22 @@ namespace WebPublisher
             indexText = indexText.Remove(groupIndex, groupLength);
             indexText = indexText.Insert(groupIndex, href);
             return indexText;
+        }
+
+        private static string GetFileHash(string path)
+        {
+            using (FileStream stream = new FileStream(path, FileMode.Open))
+            {
+                byte[] buffer = new byte[stream.Length];
+                stream.Read(buffer, 0, buffer.Length);
+                string fileHash = "";
+                byte[] computedBytes = new Crc32().ComputeHash(buffer);
+                foreach (byte b in computedBytes)
+                {
+                    fileHash += b.ToString("x2").ToUpper();
+                }
+                return fileHash;
+            }
         }
     }
 }

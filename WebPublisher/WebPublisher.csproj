@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="FTPClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.Designer.cs">
@@ -63,13 +64,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\crcsharp\CRC\CRC\CRC.csproj">
-      <Project>{1141EA90-7604-42D9-BE59-F8B9F7F0053D}</Project>
-      <Name>CRC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ftpclient-csharp\FTPClient\FTPClient\FTPClient.csproj">
-      <Project>{D9D42725-EF61-4989-AFD3-69EA7F08984D}</Project>
-      <Name>FTPClient</Name>
+    <ProjectReference Include="..\..\DamienGKit\CSharp\DamienG.Library\DamienG.Library.csproj">
+      <Project>{678c5c16-2d7d-4cc8-bef2-29bb65e311b5}</Project>
+      <Name>DamienG.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
