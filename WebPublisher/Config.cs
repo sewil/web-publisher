@@ -38,6 +38,9 @@ namespace WebPublisher
         [JsonProperty(PropertyName = "file", NullValueHandling = NullValueHandling.Ignore)]
         public string File { get; set; }
 
+        [JsonProperty(PropertyName = "directory", NullValueHandling = NullValueHandling.Ignore)]
+        public string Directory { get; set; }
+
         [JsonProperty(PropertyName = "entryLinkPattern", NullValueHandling = NullValueHandling.Ignore)]
         public string EntryLinkPattern { get; set; }
     }

@@ -45,39 +45,34 @@ namespace WebPublisher
             var filesToUpload = new List<string>();
             filesToUpload.Add(config.Entry);
 
+            FTPClient ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
+
+            // Upload attachments
             for (int i = 0; i < config.Include.Count; i++)
             {
                 ConfigAttachment attachment = config.Include[i];
                 if (!string.IsNullOrWhiteSpace(attachment.File) && File.Exists(attachment.File))
                 {
-                    filesToUpload.Add(attachment.File);
                     if (!string.IsNullOrWhiteSpace(attachment.EntryLinkPattern))
                     {
-                        FileInfo fileInfo = new FileInfo(attachment.File);
                         Match fileMatch = Regex.Match(entryText, attachment.EntryLinkPattern);
                         string fileHash = GetFileHash(attachment.File);
-                        entryText = ReplaceVHash(fileMatch, fileInfo, fileHash, entryText);
+                        string remoteDirectory = Path.Combine(config.UploadDirectory, attachment.Directory ?? "");
+                        string remoteFileName = Path.GetFileName(attachment.File);
+                        entryText = ReplaceVHash(fileMatch, new FileInfo(attachment.File), fileHash, entryText);
+                        ftpClient.Upload(attachment.File, remoteDirectory, remoteFileName, FileExistsAction.Overwrite);
                     }
                 }
             }
 
+            // Update entry file with new hashes
             if (entryText != originalEntryText)
             {
                 File.WriteAllText(config.Entry, entryText);
             }
 
-            FTPClient ftpClient = new FTPClient(Settings.Default.ftpHost, Settings.Default.ftpUsername, Settings.Default.ftpPassword);
-            for(int i = 0; i < filesToUpload.Count; i++)
-            {
-                string fileToUpload = filesToUpload[i];
-                string fileName = Path.GetFileName(fileToUpload);
-                string directory = "";
-                if (fileToUpload.Contains("/"))
-                {
-                    directory = fileToUpload.Substring(0, fileToUpload.LastIndexOf('/'));
-                }
-                ftpClient.Upload(fileToUpload, Path.Combine(config.UploadDirectory, directory), fileName, FileExistsAction.Overwrite);
-            }
+            // Upload entry file
+            ftpClient.Upload(config.Entry, config.UploadDirectory, Path.GetFileName(config.Entry), FileExistsAction.Overwrite);
         }
 
         private static string ReplaceVHash(Match match, FileInfo file, string hash, string indexText)
